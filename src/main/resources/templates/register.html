@@ -8,6 +8,8 @@
 
 <h1>ユーザー登録</h1>
 
+<p th:if="${error}" th:text="${error}"></p>
+
 <form th:action="@{/register}" th:object="${user}" method="post">
     名前：<input th:field="*{name}"><br>
     メール：<input th:field="*{email}"><br>
@@ -15,7 +17,7 @@
     <button type="submit">登録</button>
 </form>
 
-<a href="/login">ログインへ</a>
+<a href="/login">ログイン</a>
 
 </body>
 </html>
