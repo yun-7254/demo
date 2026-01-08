@@ -38,6 +38,13 @@ public class RegisterController {
             return "register";
         }
 
+        // メールアドレス重複チェック
+        if (userRepository.existsByEmail(user.getEmail())) {
+            // 重複の場合
+            throw new IllegalStateException("このメールアドレスは既に登録されています。");
+        }
+
+
         // ユーザーを保存
         userRepository.save(user);
 
