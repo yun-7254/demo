@@ -49,7 +49,7 @@ public class RegisterController {
         // メールアドレス重複チェック
         if (userRepository.existsByEmail(user.getEmail())) {
             // 重複の場合
-            model.addAttribute("このメールアドレスは既に登録されています。");
+            model.addAttribute("error", "このメールアドレスは既に登録されています。");
             return "register";
         }
 
