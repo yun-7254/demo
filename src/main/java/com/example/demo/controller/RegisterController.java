@@ -30,9 +30,9 @@ public class RegisterController {
     public String registerProcess(@ModelAttribute User user, Model model) {
 
         // 名前・メールアドレス・パスワードが未入力の場合
-        if (user.getName() == null || user.getName().equals("")
-                || user.getEmail() == null || user.getEmail().equals("")
-                || user.getPassword() == null || user.getPassword().equals("")) {
+        if (user.getName() == null || user.getName().isEmpty()
+                || user.getEmail() == null || user.getEmail().isEmpty()
+                || user.getPassword() == null || user.getPassword().isEmpty()) {
 
             model.addAttribute("error", "必須項目を入力してください");
             return "register";
@@ -43,7 +43,6 @@ public class RegisterController {
             // 重複の場合
             throw new IllegalStateException("このメールアドレスは既に登録されています。");
         }
-
 
         // ユーザーを保存
         userRepository.save(user);
