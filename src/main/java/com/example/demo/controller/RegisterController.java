@@ -29,7 +29,7 @@ public class RegisterController {
     @PostMapping("/register")
     public String registerProcess(@ModelAttribute User user, Model model) {
 
-        // メールとパスワードが未入力の場合
+        // 名前・メールアドレス・パスワードが未入力の場合
         if (user.getName() == null || user.getName().equals("")
                 || user.getEmail() == null || user.getEmail().equals("")
                 || user.getPassword() == null || user.getPassword().equals("")) {
