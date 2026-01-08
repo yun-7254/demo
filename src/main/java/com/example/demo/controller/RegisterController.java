@@ -49,7 +49,8 @@ public class RegisterController {
         // メールアドレス重複チェック
         if (userRepository.existsByEmail(user.getEmail())) {
             // 重複の場合
-            throw new IllegalStateException("このメールアドレスは既に登録されています。");
+            model.addAttribute("このメールアドレスは既に登録されています。");
+            return "register";
         }
 
         // ユーザーを保存
