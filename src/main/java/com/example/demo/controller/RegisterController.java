@@ -30,18 +30,18 @@ public class RegisterController {
     public String registerProcess(@ModelAttribute User user, Model model) {
 
         // 名前未入力チェック
-        if (user.getName() == null || user.getName().isEmpty()){
+        if (user.getName().isEmpty()){
             model.addAttribute("error", "名前を入力してください");
         return "register";
     }
 
         // メールアドレス未入力チェック
-        if (user.getEmail() == null || user.getEmail().isEmpty()){
+        if (user.getEmail().isEmpty()){
             model.addAttribute("error", "メールアドレスを入力してください");
             return "register";
     }
         // パスワード未入力チェック
-        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+        if (user.getPassword().isEmpty()) {
             model.addAttribute("error", "必須項目を入力してください");
             return "register";
         }
