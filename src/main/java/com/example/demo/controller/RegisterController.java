@@ -30,7 +30,8 @@ public class RegisterController {
     public String registerProcess(@ModelAttribute User user, Model model) {
 
         // メールとパスワードが未入力の場合
-        if (user.getEmail() == null || user.getEmail().equals("")
+        if (user.getName() == null || user.getName().equals("")
+                || user.getEmail() == null || user.getEmail().equals("")
                 || user.getPassword() == null || user.getPassword().equals("")) {
 
             model.addAttribute("error", "必須項目を入力してください");
