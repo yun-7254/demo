@@ -37,10 +37,9 @@ public class LoginController {
                 .findByEmailAndPassword(email, password)
                 .orElse(null);
 
-        // ユーザーが見つかった場合
         if (user != null) {
-            // セッションにログインユーザーを保存
-            session.setAttribute("loginUser", user);
+            // session には userId のみ保存
+            session.setAttribute("loginUserId", user.getId());
             return "redirect:/user";
         }
 
