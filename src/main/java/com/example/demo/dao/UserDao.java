@@ -45,7 +45,7 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
 
     // ユーザー情報を更新
     public void update(User user) {
-        String sql = "DELETE FROM users WHERE id = ?";
+        String sql = "UPDATE users SET name = ?, email = ?, WHERE id = ?";
 
         try (
             Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
