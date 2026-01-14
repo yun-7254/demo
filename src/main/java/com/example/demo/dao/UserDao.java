@@ -8,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Optional;
 
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserDao {
 private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
     private static final String USER = "root";
