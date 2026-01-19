@@ -1,6 +1,5 @@
 package com.example.demo.filter;
 
-import com.example.demo.entity.User;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
@@ -28,7 +27,7 @@ public class LoginFilter implements Filter {
 
         String uri = req.getRequestURI();
 
-        // ログイン画面と登録画面はそのまま表示する
+        // ログイン不要ページはそのまま通す
         if (uri.startsWith("/login")
                 || uri.startsWith("/register")
                 || uri.equals("/error")) {
@@ -36,12 +35,20 @@ public class LoginFilter implements Filter {
             return;
         }
 
-        // セッションからログインユーザーを取得
-        HttpSession session = req.getSession();
-        User loginUser = (User) session.getAttribute("loginUserId");
+        // セッションが既にあるか確認
+        HttpSession session = req.getSession(false);
 
-        // ログインしていない場合はログイン画面へ
-        if (loginUser == null) {
+        
+        // セッションが無い=未ログイン
+        if (session == null) {
+            res.sendRedirect("/login");
+            return;
+        }
+
+        // ログイン済みか確認
+        Long loginUserId = (Long) session.getAttribute("loginUserId");
+
+        if (loginUserId == null) {
             res.sendRedirect("/login");
             return;
         }
