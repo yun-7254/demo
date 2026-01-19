@@ -16,6 +16,7 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
     private static final String USER = "root";
     private static final String PASSWORD = "password";
 
+
     // IDでユーザー情報を取得
     public Optional<User> findById(Long id) {
         String sql = "SELECT * FROM users WHERE id = ?";
@@ -43,9 +44,29 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
         return Optional.empty();
     }
 
+
+    // 新規登録
+    public void insert(User user) {
+        String sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+
+        try (
+            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     // ユーザー情報を更新
     public void update(User user) {
-        String sql = "UPDATE users SET name = ?, email = ?, WHERE id = ?";
+        String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
 
         try (
             Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -61,6 +82,7 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
             e.printStackTrace();
         }
     }
+
 
     // ユーザー情報を削除
     public void deleteById(Long id) {
@@ -78,6 +100,7 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
         }
     }
 
+
     // メールアドレス重複チェック
     public boolean existsByEmail(String email) {
         String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
@@ -87,10 +110,10 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setString(1, email);
-
             ResultSet rs = ps.executeQuery();
+
             rs.next();
-            return rs.getInt(1) > 0;
+                return rs.getInt(1) > 0;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,7 +121,8 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
         }
     }
 
-    // メールアドレスとパスワードでユーザー情報を取得
+
+    // ログイン用
     public User findByEmailAndPassword(String email, String password) {
         String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
 
@@ -108,7 +132,6 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
         ) {
             ps.setString(1, email);
             ps.setString(2, password);
-
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
