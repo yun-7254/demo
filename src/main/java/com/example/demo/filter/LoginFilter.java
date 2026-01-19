@@ -29,14 +29,16 @@ public class LoginFilter implements Filter {
         String uri = req.getRequestURI();
 
         // ログイン画面と登録画面はそのまま表示する
-        if (uri.equals("/login") || uri.equals("/register")) {
+        if (uri.startsWith("/login")
+                || uri.startsWith("/register")
+                || uri.equals("/error")) {
             chain.doFilter(request, response);
             return;
         }
 
         // セッションからログインユーザーを取得
         HttpSession session = req.getSession();
-        User loginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute("loginUserId");
 
         // ログインしていない場合はログイン画面へ
         if (loginUser == null) {
