@@ -28,32 +28,28 @@ public class LoginFilter implements Filter {
         String uri = req.getRequestURI();
 
         // ログイン不要ページはそのまま通す
-        if (uri.startsWith("/login")
-                || uri.startsWith("/register")
-                || uri.equals("/error")) {
+        if (uri.equals("/login")
+                || uri.equals("/register")
+                || uri.equals("/error")
+                || uri.startsWith("/css/")
+                || uri.startsWith("/js/")
+                || uri.startsWith("/images/")) {
+
             chain.doFilter(request, response);
             return;
         }
 
-        // セッションが既にあるか確認
         HttpSession session = req.getSession(false);
+        Long loginUserId = (session == null)
+                ? null
+                : (Long) session.getAttribute("loginUserId");
 
-        
-        // セッションが無い=未ログイン
-        if (session == null) {
-            res.sendRedirect("/login");
-            return;
-        }
-
-        // ログイン済みか確認
-        Long loginUserId = (Long) session.getAttribute("loginUserId");
-
+        // 未ログインならログイン画面へ
         if (loginUserId == null) {
             res.sendRedirect("/login");
             return;
         }
 
-        // 問題なければ次の処理へ
         chain.doFilter(request, response);
     }
 }

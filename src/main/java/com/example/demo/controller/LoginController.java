@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.User;
 import com.example.demo.dao.UserDao;
+import com.example.demo.entity.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,8 @@ public class LoginController {
 
     // ログイン画面表示
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpSession session) {
+        session.removeAttribute("loginError");
         return "login";
     }
 
@@ -31,17 +32,16 @@ public class LoginController {
             HttpSession session
     ) {
 
-        // メールとパスワードでユーザーを探す
+        // メールアドレスとパスワードでユーザー検索
         User user = userDao.findByEmailAndPassword(email, password);
 
         if (user != null) {
-            // session には userId のみ保存
             session.setAttribute("loginUserId", user.getId());
             return "redirect:/user";
         }
 
-        // 見つからなかった場合はエラー表示
-        session.setAttribute("loginError", "ログインに失敗しました");
-        return "login";
+        // ログイン失敗
+        session.setAttribute("loginError", "メールアドレスまたはパスワードが違います");
+        return "redirect:/login";
     }
 }
