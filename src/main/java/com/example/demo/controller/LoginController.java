@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.dao.UserDao;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
-    private UserRepository userRepository;
+    private final UserDao userDao;
 
-    // とりあえずRepositoryを使うためにコンストラクタで受け取る
-    public LoginController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public LoginController(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     // ログイン画面表示
@@ -33,9 +32,7 @@ public class LoginController {
     ) {
 
         // メールとパスワードでユーザーを探す
-        User user = userRepository
-                .findByEmailAndPassword(email, password)
-                .orElse(null);
+        User user = userDao.findByEmailAndPassword(email, password);
 
         if (user != null) {
             // session には userId のみ保存
