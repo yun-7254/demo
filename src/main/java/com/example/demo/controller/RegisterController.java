@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class RegisterController {
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
     public RegisterController(UserDao userDao) {
         this.userDao = userDao;
