@@ -3,7 +3,7 @@ package com.example.demo.dao;
 import com.example.demo.entity.User;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Optional;
@@ -12,17 +12,20 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserDao {
-private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
-    private static final String USER = "root";
-    private static final String PASSWORD = "password";
 
+    private final DataSource dataSource;
+
+    // application.properties の DB設定を使う
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     // IDでユーザー情報を取得
     public Optional<User> findById(Long id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setLong(1, id);
@@ -50,7 +53,7 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
         String sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
 
         try (
-            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setString(1, user.getName());
@@ -65,21 +68,23 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
 
 
     // ユーザー情報を更新
-    public void update(User user) {
+    public boolean update(User user) {
         String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setString(1, user.getName());
             ps.setString(2, user.getEmail());
             ps.setLong(3, user.getId());
             ps.executeUpdate();
+            return true;
 
         } catch (Exception e) {
 
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -89,7 +94,7 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
         String sql = "DELETE FROM users WHERE id = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setLong(1, id);
@@ -106,7 +111,7 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
         String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setString(1, email);
@@ -127,7 +132,7 @@ private static final String URL = "jdbc:mysql://localhost:3306/sample_db";
         String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
 
         try (
-            Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             ps.setString(1, email);
