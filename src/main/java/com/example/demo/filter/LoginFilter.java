@@ -30,10 +30,7 @@ public class LoginFilter implements Filter {
         // ログイン不要ページはそのまま通す
         if (uri.equals("/login")
                 || uri.equals("/register")
-                || uri.equals("/error")
-                || uri.startsWith("/css/")
-                || uri.startsWith("/js/")
-                || uri.startsWith("/images/")) {
+                || uri.equals("/error")) {
 
             chain.doFilter(request, response);
             return;
