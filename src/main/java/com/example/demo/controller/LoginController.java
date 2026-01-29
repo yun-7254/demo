@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.dao.UserDao;
 import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
-    private UserRepository userRepository;
+    private final UserDao userDao;
 
-    // とりあえずRepositoryを使うためにコンストラクタで受け取る
-    public LoginController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public LoginController(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     // ログイン画面表示
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpSession session) {
+        session.removeAttribute("loginError");
         return "login";
     }
 
@@ -32,20 +32,16 @@ public class LoginController {
             HttpSession session
     ) {
 
-        // メールとパスワードでユーザーを探す
-        User user = userRepository
-                .findByEmailAndPassword(email, password)
-                .orElse(null);
+        // メールアドレスとパスワードでユーザー検索
+        User user = userDao.findByEmailAndPassword(email, password);
 
-        // ユーザーが見つかった場合
         if (user != null) {
-            // セッションにログインユーザーを保存
-            session.setAttribute("loginUser", user);
+            session.setAttribute("loginUserId", user.getId());
             return "redirect:/user";
         }
 
-        // 見つからなかった場合はエラー表示
-        session.setAttribute("loginError", "ログインに失敗しました");
-        return "login";
+        // ログイン失敗
+        session.setAttribute("loginError", "メールアドレスまたはパスワードが違います");
+        return "redirect:/login";
     }
 }

@@ -8,6 +8,10 @@
 
 <h1>ログイン</h1>
 
+<p th:if="${session.loginError}">
+    <span th:text="${session.loginError}"></span>
+</p>
+
 <form th:action="@{/login}" method="post">
     メール：<input type="email" name="email"><br>
     パスワード：<input type="password" name="password"><br>
